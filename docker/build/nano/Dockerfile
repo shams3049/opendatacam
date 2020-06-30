@@ -16,7 +16,7 @@ RUN make
 
 # COPY weights, get them localy in the Dockerfile folder previously as they are slow to download each time
 # Links: https://github.com/AlexeyAB/darknet#pre-trained-models
-COPY yolov3-tiny-prn.weights yolov3-tiny-prn.weights
+COPY yolov4-tiny.weights yolov4-tiny.weights
 
 # Include demo.mp4 file
 RUN mkdir opendatacam_videos && cd opendatacam_videos && wget https://github.com/opendatacam/opendatacam/raw/development/public/static/demo/demo.mp4
@@ -25,7 +25,7 @@ RUN mkdir opendatacam_videos && cd opendatacam_videos && wget https://github.com
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
-RUN git clone --depth 1 -b v3.0.0-beta.3 https://github.com/opendatacam/opendatacam /var/local/opendatacam
+RUN git clone --depth 1 -b v3.0.1 https://github.com/opendatacam/opendatacam /var/local/opendatacam
 
 WORKDIR /var/local/opendatacam
 
@@ -35,7 +35,7 @@ RUN npm run build
 # Set default settings for Desktop run
 RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
-RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov3-tiny-prn+g' config.json;
+RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov4-tiny+g' config.json;
 
 EXPOSE 8080 8070 8090
 

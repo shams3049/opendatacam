@@ -24,7 +24,6 @@ If you have an error while doing `npm install` it is probably a problem with nod
 
 ### Release checklist
 
-- Generate up to date api documentation `npm run generateapidoc`
 - Make sure that config.json has the TO_REPLACE_VIDEO_INPUT, TO_REPLACE_VIDEO_INPUT values that will be replaced by sed on installation
 - Search and replace OLD_VERSION with NEW_VERSION in all documentation
 - Make sure correct version in config.json > OPENDATACAM_VERSION
@@ -32,6 +31,7 @@ If you have an error while doing `npm install` it is probably a problem with nod
 - Make sure correct version in README "Install and start OpenDataCam" wget install script
 - Make sure correct version in JETSON_NANO.md "Install OpenDataCam" wget install script
 - Make sure correct VERSION in /docker/install-opendatacam.sh
+- Generate up to date api documentation `npm run generateapidoc`
 - Push and Tag version on github
 - Compile docker image on 4 platforms ( nano, tx2, xavier, nvidia-docker ) , upload them to dockerhub and tag them properly
 - Add Release on github
@@ -40,19 +40,19 @@ If you have an error while doing `npm install` it is probably a problem with nod
 
 ```
 # Tag latest commit
-git tag v3.0.0-beta.3
+git tag v3.0.1
 
 # Push tag
-git push origin v3.0.0-beta.3
+git push origin v3.0.1
 
 # List tags
 git tag --list
 
 # Remove tag on remote
-git push origin :v3.0.0-beta.3
+git push origin :v3.0.1
 
 # Delete local tag
-git tag --delete v3.0.0-beta.3
+git tag --delete v3.0.1
 
 # Push all tag
 git push --tags

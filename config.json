@@ -1,5 +1,5 @@
 {
-  "OPENDATACAM_VERSION": "3.0.0-beta.3",
+  "OPENDATACAM_VERSION": "3.0.1",
   "PATH_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET",
   "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
   "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
@@ -15,6 +15,10 @@
     "confidence_threshold": 0.2,
     "iouLimit": 0.05,
     "unMatchedFrameTolerance": 5
+  },
+  "COUNTER_SETTINGS": {
+    "minAngleWithCountingLineThreshold": 5,
+    "computeTrajectoryBasedOnNbOfPastFrame": 5
   },
   "VALID_CLASSES": ["*"],
   "DISPLAY_CLASSES": [
@@ -50,25 +54,10 @@
       "cfg": "cfg/yolov4-416x416.cfg",
       "weights": "yolov4.weights"
     },
-    "yolov3": {
+    "yolov4-tiny": {
       "data": "cfg/coco.data",
-      "cfg": "cfg/yolov3.cfg",
-      "weights": "yolov3.weights"
-    },
-    "yolov3-tiny-prn": {
-      "data": "cfg/coco.data",
-      "cfg": "cfg/yolov3-tiny-prn.cfg",
-      "weights": "yolov3-tiny-prn.weights"
-    },
-    "yolov3-tiny": {
-      "data": "cfg/coco.data",
-      "cfg": "cfg/yolov3-tiny.cfg",
-      "weights": "yolov3-tiny.weights"
-    },
-    "yolov2-voc": {
-      "data": "cfg/voc.data",
-      "cfg": "cfg/yolo-voc.cfg",
-      "weights": "yolo-voc.weights"
+      "cfg": "cfg/yolov4-tiny.cfg",
+      "weights": "yolov4-tiny.weights"
     }
   },
   "TRACKER_ACCURACY_DISPLAY": {

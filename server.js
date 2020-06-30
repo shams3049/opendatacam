@@ -241,7 +241,7 @@ app.prepare()
                     "h": 666
                   }
                 },
-                "name": "Counter line 1"
+                "name": "Counter line 1",
                 "type": "bidirectional"
               }
             }
@@ -838,7 +838,7 @@ app.prepare()
    *
    * @apiSuccessExample {json} Success Response:
    * {
-      "OPENDATACAM_VERSION": "3.0.0-beta.3",
+      "OPENDATACAM_VERSION": "3.0.1",
       "PATH_TO_YOLO_DARKNET": "/darknet",
       "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
       "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
@@ -898,20 +898,15 @@ app.prepare()
         "red": "#AB4435"
       },
       "NEURAL_NETWORK_PARAMS": {
-        "yolov3": {
+        "yolov4": {
           "data": "cfg/coco.data",
-          "cfg": "cfg/yolov3.cfg",
-          "weights": "yolov3.weights"
+          "cfg": "cfg/yolov4-416x416.cfg",
+          "weights": "yolov4.weights"
         },
-        "yolov3-tiny": {
+        "yolov4-tiny": {
           "data": "cfg/coco.data",
-          "cfg": "cfg/yolov3-tiny.cfg",
-          "weights": "yolov3-tiny.weights"
-        },
-        "yolov2-voc": {
-          "data": "cfg/voc.data",
-          "cfg": "cfg/yolo-voc.cfg",
-          "weights": "yolo-voc.weights"
+          "cfg": "cfg/yolov4-tiny.cfg",
+          "weights": "yolov4-tiny.weights"
         }
       },
       "TRACKER_ACCURACY_DISPLAY": {
