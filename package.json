@@ -8,7 +8,7 @@
     "generateapidoc": "apidoc -i . -e node_modules/ -o apidoc/"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "csv-express": "^1.2.2",
     "dayjs": "^1.8.28",
@@ -24,7 +24,7 @@
     "mjpeg-server": "^0.3.0",
     "mongodb": "^3.5.8",
     "multer": "^1.4.2",
-    "next": "^9.4.4",
+    "next": "^9.5.0",
     "next-redux-wrapper": "^5.0.0",
     "node-moving-things-tracker": "^0.7.5",
     "postcss-import": "^12.0.1",
