@@ -387,7 +387,7 @@ module.exports = {
 
     // Persist to db
     if (Opendatacam.recordingStatus.isRecording) {
-      // Only record from frame 25 for files, we can't be sure darknet has hooked to opendatacam
+      // Only record from frame 25 for files, we can't be sure deepstream has hooked to opendatacam
       // before
       if (Opendatacam.recordingStatus.filename.length > 0 && frameId < 25) {
         // console.log('do not persist yet for file, wait for frameId 25')
@@ -863,7 +863,7 @@ module.exports = {
         return;
       }
 
-      console.log('==== HTTP Stream closed by darknet, reset UI ====');
+      console.log('==== HTTP Stream closed by deepstream, reset UI ====');
       console.log('==== If you are running on a file, it is restarting  because you reached the '
         + 'end ====');
       console.log('==== If you are running on a camera, it might have crashed for some reason and '

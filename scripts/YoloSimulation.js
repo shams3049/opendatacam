@@ -10,9 +10,9 @@ const { performance } = require('perf_hooks');
 const yargs = require('yargs');
 const splitargs = require('splitargs');
 const os = require('os');
-const { YoloDarknet } = require('../server/processes/YoloDarknet');
+const { YoloDeepstream } = require('../server/processes/YoloDeepstream');
 
-class YoloSimulation extends YoloDarknet {
+class YoloSimulation extends YoloDeepstream {
   constructor(config) {
     super();
 

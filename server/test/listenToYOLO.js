@@ -23,7 +23,7 @@ const HTTPRequestListeningToYOLO = http.request(options, (res) => {
 
   res.on('close', () => {
     // if (YOLO.getStatus().isStarted) {
-    console.log('==== HTTP Stream closed by darknet, reset UI, might be running from file and ended it or have troubles with webcam and need restart =====');
+    console.log('==== HTTP Stream closed by deepstream, reset UI, might be running from file and ended it or have troubles with webcam and need restart =====');
     // YOLO.stop();
     // } else {
     //     // Counting stopped by user, keep yolo running

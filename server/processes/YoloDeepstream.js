@@ -2,9 +2,9 @@ const forever = require('forever-monitor');
 const { performance } = require('perf_hooks');
 const { EventEmitter } = require('events');
 
-class YoloDarknet extends EventEmitter {
+class YoloDeepstream extends EventEmitter {
   /**
-   * Creates a YoloDarknet object
+   * Creates a YoloDeepstream object
    *
    * @param {*} config The configuration to use
    *
@@ -30,12 +30,12 @@ class YoloDarknet extends EventEmitter {
       videoParams: null,
       jsonStreamPort: null,
       mjpegStreamPort: null,
-      darknetPath: null,
-      darknetCmd: null,
+      deepstreamPath: null,
+      deepstreamCmd: null,
     };
 
     if (config == null) {
-      console.warn('YoloDarknet: Empty configuration passed, most likely because you are in Simulation mode.');
+      console.warn('YoloDeepstream: Empty configuration passed, most likely because you are in Simulation mode.');
       return;
     }
 
@@ -46,20 +46,20 @@ class YoloDarknet extends EventEmitter {
       }
     });
 
-    let darknetCommand = [];
-    const initialCommand = [this.config.darknetCmd, 'detector', 'demo', this.config.yoloParams.data, this.config.yoloParams.cfg, this.config.yoloParams.weights];
-    const endCommand = ['-ext_output', '-dont_show', '-dontdraw_bbox', '-json_port', this.config.jsonStreamPort, '-mjpeg_port', this.config.mjpegStreamPort];
+    let deepstreamCommand = [];
+    const initialCommand = [this.config.deepstreamCmd];
+    const endCommand = ['-json_port', this.config.jsonStreamPort, '-mjpeg_port', this.config.mjpegStreamPort];
 
     // Special case if input camera is specified as a -c flag as we need to add one arg
     if (this.config.videoParams.indexOf('-c') === 0) {
-      darknetCommand = initialCommand.concat(this.config.videoParams.split(' ')).concat(endCommand);
+      deepstreamCommand = initialCommand.concat(this.config.videoParams.split(' ')).concat(endCommand);
     } else {
-      darknetCommand = initialCommand.concat(this.config.videoParams).concat(endCommand);
+      deepstreamCommand = initialCommand.concat(this.config.videoParams).concat(endCommand);
     }
 
-    this.process = new (forever.Monitor)(darknetCommand, {
+    this.process = new (forever.Monitor)(deepstreamCommand, {
       max: Number.POSITIVE_INFINITY,
-      cwd: this.config.darknetPath,
+      cwd: this.config.deepstreamPath,
       env: { LD_LIBRARY_PATH: './' },
       killTree: true,
     });
@@ -89,7 +89,7 @@ class YoloDarknet extends EventEmitter {
       const stdoutText = data.toString();
       // Hacky way to get the video resolution from YOLO
       // We parse the stdout looking for "Video stream: 640 x 480"
-      // alternative would be to add this info to the JSON stream sent by YOLO, would need to send a PR to https://github.com/alexeyab/darknet
+      // alternative would be to add this info to the JSON stream sent by YOLO, would need to send a PR to the deepstream repo
       if (stdoutText.indexOf('Video stream:') > -1) {
         const splitOnStream = stdoutText.toString().split('stream:');
         const ratio = splitOnStream[1].split('\n')[0];
@@ -183,4 +183,4 @@ class YoloDarknet extends EventEmitter {
   }
 }
 
-module.exports = { YoloDarknet };
+module.exports = { YoloDeepstream };

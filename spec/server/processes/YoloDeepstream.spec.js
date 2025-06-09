@@ -1,6 +1,6 @@
-const { YoloDarknet } = require('../../../server/processes/YoloDarknet');
+const { YoloDeepstream } = require('../../../server/processes/YoloDeepstream');
 
-describe('YoloDarknet', () => {
+describe('YoloDeepstream', () => {
   let yolo = null;
   let yoloConfig = null;
 
@@ -15,10 +15,10 @@ describe('YoloDarknet', () => {
       videoParams: 'opendatacam_videos/demo.mp4',
       jsonStreamPort: 8070,
       mjpegStreamPort: 8090,
-      darknetPath: './spec/scripts/',
-      darknetCmd: './darknet',
+      deepstreamPath: './spec/scripts/',
+      deepstreamCmd: './deepstream',
     };
-    yolo = new YoloDarknet(yoloConfig);
+    yolo = new YoloDeepstream(yoloConfig);
   });
 
   afterEach(async () => {
@@ -56,21 +56,21 @@ describe('YoloDarknet', () => {
       });
 
       it('is live by default', () => {
-        yolo = new YoloDarknet(yoloConfig);
+        yolo = new YoloDeepstream(yoloConfig);
 
         expect(yolo.isLive()).toBeTrue();
       });
 
       it('is live if set to live', () => {
         yoloConfig.videoParams += ' --isLive true';
-        yolo = new YoloDarknet(yoloConfig);
+        yolo = new YoloDeepstream(yoloConfig);
 
         expect(yolo.isLive()).toBeTrue();
       });
 
       it('is live if set to live', () => {
         yoloConfig.videoParams += ' --isLive false';
-        yolo = new YoloDarknet(yoloConfig);
+        yolo = new YoloDeepstream(yoloConfig);
 
         expect(yolo.isLive()).toBeFalse();
       });
@@ -79,7 +79,7 @@ describe('YoloDarknet', () => {
     it('is live otherwise', () => {
       yoloConfig.videoType = 'usbcam';
       yoloConfig.videoParams = 'v4l2src device=/dev/video0 ! video/x-raw, framerate=30/1, width=640, height=360 ! videoconvert ! appsink';
-      yolo = new YoloDarknet(yoloConfig);
+      yolo = new YoloDeepstream(yoloConfig);
 
       expect(yolo.isLive()).toBeTrue();
     });

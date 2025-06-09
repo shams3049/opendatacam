@@ -6,8 +6,8 @@ const config = require('../../config.json');
 // - Get the port from config or use the default
 // - If we have the environment variable defined we overrule the default and config
 const envAppPort = process.env.PORT_APP;
-const envDarknetMjpegStreamPort = process.env.PORT_DARKNET_MJPEG_STREAM;
-const envDarknetJsonStreamPort = process.env.PORT_DARKNET_JSON_STREAM;
+const envDeepstreamMjpegStreamPort = process.env.PORT_DEEPSTREAM_MJPEG_STREAM;
+const envDeepstreamJsonStreamPort = process.env.PORT_DEEPSTREAM_JSON_STREAM;
 
 /**
  * Takes a string and tries to parseInt and does a isNaN check
@@ -47,22 +47,22 @@ module.exports = {
   getPortFromConfig,
   parseAndTestIsNumber,
   getMjpegStreamPort: () => {
-    const port = getPortFromConfig(config, 'darknet_mjpeg_stream', 8090);
+    const port = getPortFromConfig(config, 'deepstream_mjpeg_stream', 8090);
     if (
-      envDarknetJsonStreamPort
-      && parseAndTestIsNumber(envDarknetJsonStreamPort)
+      envDeepstreamJsonStreamPort
+      && parseAndTestIsNumber(envDeepstreamJsonStreamPort)
     ) {
-      return parseInt(envDarknetMjpegStreamPort, 10);
+      return parseInt(envDeepstreamMjpegStreamPort, 10);
     }
     return port;
   },
   getJsonStreamPort: () => {
-    const port = getPortFromConfig(config, 'darknet_json_stream', 8070);
+    const port = getPortFromConfig(config, 'deepstream_json_stream', 8070);
     if (
-      envDarknetJsonStreamPort
-      && parseAndTestIsNumber(envDarknetJsonStreamPort)
+      envDeepstreamJsonStreamPort
+      && parseAndTestIsNumber(envDeepstreamJsonStreamPort)
     ) {
-      return parseInt(envDarknetJsonStreamPort, 10);
+      return parseInt(envDeepstreamJsonStreamPort, 10);
     }
     return port;
   },

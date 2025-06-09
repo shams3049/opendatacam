@@ -1,7 +1,7 @@
 {
   "OPENDATACAM_VERSION": "3.0.2",
-  "PATH_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET",
-  "CMD_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET/darknet",
+  "PATH_TO_DEEPSTREAM" : "TO_REPLACE_PATH_TO_DEEPSTREAM",
+  "CMD_TO_DEEPSTREAM" : "TO_REPLACE_PATH_TO_DEEPSTREAM/deepstream-app",
   "VIDEO_UPLOAD_FOLDER": "TO_REPLACE_PATH_TO_DARKNET/opendatacam_videos_uploaded",
   "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
   "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
@@ -89,8 +89,8 @@
   },
   "PORTS": {
     "app": 8080,
-    "darknet_json_stream": 8070,
-    "darknet_mjpeg_stream": 8090
+    "deepstream_json_stream": 8070,
+    "deepstream_mjpeg_stream": 8090
   },
   "GPS": {
     "enabled": false,

@@ -88,7 +88,7 @@ describe('YoloSimulation', () => {
       ['--detections', expectedConfig.videoParams.detections],
     ).concat(argsMissingRequiredNoDarknet).concat(argsDarknetSuffix);
     const argsValidDarknet = argsDarknetPrefix.concat(argsValidNoDarknet).concat(argsDarknetSuffix);
-    // YoloDarknet invokes it in a weird way that we have to handle separately
+    // YoloDeepstream invokes it in a weird way that we have to handle separately
     const yoloDarknetInvokation = [
       '/usr/local/Cellar/node/14.4.0/bin/node',
       '/Users/vsaw/Documents/Development/opendatacam/scripts/YoloSimulation.js',
@@ -153,7 +153,7 @@ describe('YoloSimulation', () => {
       expect(cfg).toEqual(expectedConfig);
     });
 
-    it('handles YoloDarknet invokation', () => {
+    it('handles YoloDeepstream invokation', () => {
       expect(invokeParser(yoloDarknetInvokation)).not.toThrow();
       expect(cfg).toEqual(expectedConfig);
     });

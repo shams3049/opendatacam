@@ -54,8 +54,8 @@ describe('configHelper', () => {
   describe('process env', () => {
     it('takes ENV values by default', () => {
       expect(getAppPort()).toBe(parseInt(process.env.PORT_APP, 10));
-      expect(getJsonStreamPort()).toBe(parseInt(process.env.PORT_DARKNET_JSON_STREAM, 10));
-      expect(getMjpegStreamPort()).toBe(parseInt(process.env.PORT_DARKNET_MJPEG_STREAM, 10));
+      expect(getJsonStreamPort()).toBe(parseInt(process.env.PORT_DEEPSTREAM_JSON_STREAM, 10));
+      expect(getMjpegStreamPort()).toBe(parseInt(process.env.PORT_DEEPSTREAM_MJPEG_STREAM, 10));
     });
   });
 });

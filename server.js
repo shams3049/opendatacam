@@ -26,7 +26,7 @@ const config = require('./config.json');
 const configHelper = require('./server/utils/configHelper');
 const GpsTracker = require('./server/tracker/GpsTracker');
 const packageJson = require('./package.json');
-const { YoloDarknet } = require('./server/processes/YoloDarknet');
+const { YoloDeepstream } = require('./server/processes/YoloDeepstream');
 const { MongoDbManager } = require('./server/db/MongoDbManager');
 
 if (packageJson.version !== config.OPENDATACAM_VERSION) {
@@ -57,12 +57,12 @@ const yoloConfig = {
   videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
   jsonStreamPort: configHelper.getJsonStreamPort(),
   mjpegStreamPort: configHelper.getMjpegStreamPort(),
-  darknetPath: config.PATH_TO_YOLO_DARKNET,
-  darknetCmd: config.CMD_TO_YOLO_DARKNET,
+  deepstreamPath: config.PATH_TO_DEEPSTREAM,
+  deepstreamCmd: config.CMD_TO_DEEPSTREAM,
 };
 if (config.VIDEO_INPUT === 'simulation') {
-  yoloConfig.darknetPath = '.';
-  yoloConfig.darknetCmd = 'node scripts/YoloSimulation.js';
+  yoloConfig.deepstreamPath = '.';
+  yoloConfig.deepstreamCmd = 'node scripts/YoloSimulation.js';
   if (yoloConfig.yoloParams === undefined) {
     yoloConfig.yoloParams = {
       data: 'data',
@@ -71,7 +71,7 @@ if (config.VIDEO_INPUT === 'simulation') {
     };
   }
 }
-let YOLO = new YoloDarknet(yoloConfig);
+let YOLO = new YoloDeepstream(yoloConfig);
 
 // Select tracker, based on GPS settings in config
 let tracker = Tracker;
@@ -191,9 +191,9 @@ app.prepare()
      * More on MJPEG over HTTP: https://en.wikipedia.org/wiki/Motion_JPEG#M-JPEG_over_HTTP
      */
     express.get('/webcam/stream', (req, res) => {
-    // Proxy MJPEG stream from darknet to avoid freezing issues
+    // Proxy MJPEG stream from deepstream to avoid freezing issues
       if (mjpgProxy == null) {
-        mjpgProxy = new MjpegProxy(`http://localhost:${config.PORTS.darknet_mjpeg_stream}`);
+        mjpgProxy = new MjpegProxy(`http://localhost:${config.PORTS.deepstream_mjpeg_stream}`);
       }
       return mjpgProxy.proxyRequest(req, res);
     });
@@ -982,7 +982,7 @@ app.prepare()
      * @apiSuccessExample {json} Success Response:
      * {
         "OPENDATACAM_VERSION": "3.0.2",
-        "PATH_TO_YOLO_DARKNET": "/darknet",
+        "PATH_TO_DEEPSTREAM": "/deepstream",
         "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
         "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
         "VIDEO_INPUTS_PARAMS": {
@@ -1130,7 +1130,7 @@ app.prepare()
           const yoloConfigClone = cloneDeep(yoloConfig);
           yoloConfigClone.videoParams = req.file.path;
           yoloConfigClone.videoType = 'file';
-          YOLO = new YoloDarknet(yoloConfigClone);
+          YOLO = new YoloDeepstream(yoloConfigClone);
 
           YOLO.start();
           Opendatacam.recordingStatus.filename = req.file.filename;

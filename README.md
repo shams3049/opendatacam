@@ -115,7 +115,6 @@ For business inquiries or professional support requests please contact [Valentin
 
 ## 💌 Acknowledgments
 
-- Original darknet @pjreddie  : [https://pjreddie.com/darknet/](https://pjreddie.com/darknet/)
-- Darknet fork + YOLOv4 by @alexeyab : [https://github.com/alexeyab/darknet](https://github.com/alexeyab/darknet)
+- NVIDIA DeepStream SDK : [https://developer.nvidia.com/deepstream-sdk](https://developer.nvidia.com/deepstream-sdk)
 - IOU / V-IOU Tracker by @bochinski : [https://github.com/bochinski/iou-tracker/](https://github.com/bochinski/iou-tracker/)
 - Next.js by @zeit : [https://github.com/zeit/next.js](https://github.com/zeit/next.js)

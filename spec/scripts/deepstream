@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# Fake Deepstream Script
+#
+# Just Dumps Deepstream output and then sleeps
+echo "Video stream: 1280x720"
+sleep 1

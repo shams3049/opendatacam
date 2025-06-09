@@ -22,5 +22,5 @@ function setEnv(name, value) {
 // configHelper.spec.js
 setEnv('MONGODB_URL', 'foo');
 setEnv('PORT_APP', '1234');
-setEnv('PORT_DARKNET_MJPEG_STREAM', '1235');
-setEnv('PORT_DARKNET_JSON_STREAM', '1236');
+setEnv('PORT_DEEPSTREAM_MJPEG_STREAM', '1235');
+setEnv('PORT_DEEPSTREAM_JSON_STREAM', '1236');
