@@ -122,14 +122,18 @@ class DeepStreamAdapter extends EventEmitter {
 
   async startRemoteMode() {
     console.log('Starting DeepStream in remote mode...');
-    
+
     let attempts = 0;
-    while (attempts < this.config.retryAttempts) {
-      const isConnected = await this.checkConnection();
+    let isConnected = false;
+
+    while (attempts < this.config.retryAttempts && !isConnected) {
+      // eslint-disable-next-line no-await-in-loop
+      isConnected = await this.checkConnection();
+
       if (isConnected) {
         this.connected = true;
         console.log('Successfully connected to remote DeepStream instance');
-        
+
         // Fetch video resolution if available
         try {
           const response = await axios.get(`${this.deepstreamUrl}/api/stream/info`);
@@ -148,10 +152,11 @@ class DeepStreamAdapter extends EventEmitter {
         this.startHealthCheck();
         return;
       }
-      
-      attempts++;
+
+      attempts += 1;
       if (attempts < this.config.retryAttempts) {
         console.log(`Connection attempt ${attempts} failed, retrying...`);
+        // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }
@@ -242,7 +247,7 @@ class DeepStreamAdapter extends EventEmitter {
       const response = await axios.post(`${this.deepstreamUrl}/api/stream/source`, {
         source: videoSource,
       });
-      
+
       console.log('Video source configured successfully');
       return response.data;
     } catch (error) {
@@ -280,7 +285,7 @@ class DeepStreamAdapter extends EventEmitter {
       const response = await axios.post(`${this.deepstreamUrl}/api/models/active`, {
         model: modelName,
       });
-      
+
       console.log(`Active model set to: ${modelName}`);
       return response.data;
     } catch (error) {

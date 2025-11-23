@@ -14,3 +14,5 @@ public/static/trackerHistoryExport.json
 *.weights
 .env
 .build
+cache/
+npm-debug.log*
