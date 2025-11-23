@@ -1224,6 +1224,113 @@ app.prepare()
       res.json(uiSettings);
     });
 
+    /**
+     * @api {get} /deepstream/status Get DeepStream connection status
+     * @apiName Get DeepStream Status
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Get the current connection status of the DeepStream adapter
+     *
+     * @apiSuccessExample {json} Success Response:
+     *    {
+            isStarted: true,
+            connected: true,
+            mode: "remote"
+          }
+     */
+    express.get('/deepstream/status', (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        res.json(YOLO.getStatus());
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {get} /deepstream/models Get available models
+     * @apiName Get DeepStream Models
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Get list of available models from DeepStream instance
+     *
+     * @apiSuccessExample {json} Success Response:
+     *    {
+            models: ["yolov4", "yolov5", "resnet10", "peoplenet", "trafficcamnet"]
+          }
+     */
+    express.get('/deepstream/models', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          const models = await YOLO.getAvailableModels();
+          res.json({ models });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {post} /deepstream/model Set active model
+     * @apiName Set DeepStream Model
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Set the active model for inference
+     *
+     * @apiParam {String} model The name of the model to activate
+     *
+     * @apiParamExample {json} Request Example:
+     *    {
+            model: "yolov4"
+          }
+     *
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 200 OK
+     */
+    express.post('/deepstream/model', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          await YOLO.setActiveModel(req.body.model);
+          res.sendStatus(200);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {post} /deepstream/source Configure video source
+     * @apiName Configure DeepStream Video Source
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Configure the video source for DeepStream
+     *
+     * @apiParam {String} source The video source URI
+     *
+     * @apiParamExample {json} Request Example:
+     *    {
+            source: "file:///path/to/video.mp4"
+          }
+     *
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 200 OK
+     */
+    express.post('/deepstream/source', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          await YOLO.configureVideoSource(req.body.source);
+          res.sendStatus(200);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
     express.use('/api/doc', serveStatic('.build/apidoc'));
 
     // Global next.js handler
