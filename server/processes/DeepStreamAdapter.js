@@ -166,10 +166,15 @@ class DeepStreamAdapter extends EventEmitter {
 
   async startLocalMode() {
     console.log('Starting DeepStream in local mode...');
-    console.warn('Local mode is not yet fully implemented. Please use remote mode with a DeepStream container.');
+    console.warn('Local mode requires DeepStream SDK to be installed on the host system.');
+    console.warn('This feature is planned for future release. Please use remote mode with a DeepStream container.');
     // TODO: Implement local DeepStream process spawning
-    // This would require DeepStream SDK to be installed locally
-    throw new Error('Local mode is not yet implemented. Please use remote mode.');
+    // This would require:
+    // 1. DeepStream SDK installed locally
+    // 2. GStreamer pipeline configuration
+    // 3. Model management
+    // 4. Process lifecycle management
+    throw new Error('Local mode is not yet implemented. Please use remote mode with a DeepStream container.');
   }
 
   startHealthCheck() {
@@ -206,11 +211,15 @@ class DeepStreamAdapter extends EventEmitter {
     });
   }
 
-  restart() {
+  async restart() {
     console.log('Restarting DeepStream adapter');
-    this.stop().then(() => {
-      this.start();
-    });
+    try {
+      await this.stop();
+      await this.start();
+    } catch (error) {
+      console.error('Error during restart:', error);
+      throw error;
+    }
   }
 
   /**
