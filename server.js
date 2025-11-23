@@ -27,6 +27,7 @@ const configHelper = require('./server/utils/configHelper');
 const GpsTracker = require('./server/tracker/GpsTracker');
 const packageJson = require('./package.json');
 const { YoloDarknet } = require('./server/processes/YoloDarknet');
+const { DeepStreamAdapter } = require('./server/processes/DeepStreamAdapter');
 const { MongoDbManager } = require('./server/db/MongoDbManager');
 
 if (packageJson.version !== config.OPENDATACAM_VERSION) {
@@ -50,28 +51,59 @@ console.log(JSON.stringify(config, null, 2));
 console.log('-----------------------------------');
 Opendatacam.setConfig(config);
 
-// Initial YOLO config
-const yoloConfig = {
-  yoloParams: config.NEURAL_NETWORK_PARAMS[config.NEURAL_NETWORK],
-  videoType: config.VIDEO_INPUT,
-  videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
-  jsonStreamPort: configHelper.getJsonStreamPort(),
-  mjpegStreamPort: configHelper.getMjpegStreamPort(),
-  darknetPath: config.PATH_TO_YOLO_DARKNET,
-  darknetCmd: config.CMD_TO_YOLO_DARKNET,
-};
-if (config.VIDEO_INPUT === 'simulation') {
-  yoloConfig.darknetPath = '.';
-  yoloConfig.darknetCmd = 'node scripts/YoloSimulation.js';
-  if (yoloConfig.yoloParams === undefined) {
-    yoloConfig.yoloParams = {
-      data: 'data',
-      cfg: 'cfg',
-      weights: 'weights',
-    };
+// Determine which detection engine to use
+const detectionEngine = config.DETECTION_ENGINE || 'darknet';
+console.log(`Detection engine: ${detectionEngine}`);
+
+// Initialize detection engine (YOLO/Darknet or DeepStream)
+let YOLO;
+
+if (detectionEngine === 'deepstream') {
+  // DeepStream configuration
+  const deepstreamConfig = {
+    mode: config.DEEPSTREAM_CONFIG.mode,
+    deepstreamHost: config.DEEPSTREAM_CONFIG.host,
+    deepstreamPort: config.DEEPSTREAM_CONFIG.port,
+    videoType: config.VIDEO_INPUT,
+    videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
+    jsonStreamPort: configHelper.getJsonStreamPort(),
+    mjpegStreamPort: configHelper.getMjpegStreamPort(),
+    modelConfig: config.DEEPSTREAM_MODELS[config.NEURAL_NETWORK],
+    connectionTimeout: config.DEEPSTREAM_CONFIG.connectionTimeout,
+    retryAttempts: config.DEEPSTREAM_CONFIG.retryAttempts,
+  };
+  
+  if (config.VIDEO_INPUT === 'simulation') {
+    deepstreamConfig.mode = 'simulation';
   }
+  
+  YOLO = new DeepStreamAdapter(deepstreamConfig);
+} else {
+  // Legacy YOLO/Darknet configuration
+  const yoloConfig = {
+    yoloParams: config.NEURAL_NETWORK_PARAMS[config.NEURAL_NETWORK],
+    videoType: config.VIDEO_INPUT,
+    videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
+    jsonStreamPort: configHelper.getJsonStreamPort(),
+    mjpegStreamPort: configHelper.getMjpegStreamPort(),
+    darknetPath: config.PATH_TO_YOLO_DARKNET,
+    darknetCmd: config.CMD_TO_YOLO_DARKNET,
+  };
+  
+  if (config.VIDEO_INPUT === 'simulation') {
+    yoloConfig.darknetPath = '.';
+    yoloConfig.darknetCmd = 'node scripts/YoloSimulation.js';
+    if (yoloConfig.yoloParams === undefined) {
+      yoloConfig.yoloParams = {
+        data: 'data',
+        cfg: 'cfg',
+        weights: 'weights',
+      };
+    }
+  }
+  
+  YOLO = new YoloDarknet(yoloConfig);
 }
-let YOLO = new YoloDarknet(yoloConfig);
 
 // Select tracker, based on GPS settings in config
 let tracker = Tracker;

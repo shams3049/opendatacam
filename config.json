@@ -1,10 +1,18 @@
 {
-  "OPENDATACAM_VERSION": "3.0.2",
+  "OPENDATACAM_VERSION": "3.1.0",
+  "DETECTION_ENGINE": "TO_REPLACE_DETECTION_ENGINE",
   "PATH_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET",
   "CMD_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET/darknet",
   "VIDEO_UPLOAD_FOLDER": "TO_REPLACE_PATH_TO_DARKNET/opendatacam_videos_uploaded",
   "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
   "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
+  "DEEPSTREAM_CONFIG": {
+    "mode": "remote",
+    "host": "deepstream",
+    "port": 8080,
+    "connectionTimeout": 5000,
+    "retryAttempts": 3
+  },
   "VIDEO_INPUTS_PARAMS": {
     "file": "opendatacam_videos/demo.mp4",
     "usbcam": "v4l2src device=/dev/video0 ! video/x-raw, framerate=30/1, width=640, height=360 ! videoconvert ! appsink",
@@ -65,6 +73,28 @@
       "data": "cfg/coco.data",
       "cfg": "cfg/yolov4-tiny.cfg",
       "weights": "yolov4-tiny.weights"
+    }
+  },
+  "DEEPSTREAM_MODELS": {
+    "resnet10": {
+      "type": "detectnet_v2",
+      "config": "config_infer_primary_detectnet.txt"
+    },
+    "yolov4": {
+      "type": "yolo",
+      "config": "config_infer_primary_yoloV4.txt"
+    },
+    "yolov5": {
+      "type": "yolo",
+      "config": "config_infer_primary_yoloV5.txt"
+    },
+    "peoplenet": {
+      "type": "detectnet_v2",
+      "config": "config_infer_primary_peoplenet.txt"
+    },
+    "trafficcamnet": {
+      "type": "detectnet_v2",
+      "config": "config_infer_primary_trafficcamnet.txt"
     }
   },
   "TRACKER_ACCURACY_DISPLAY": {

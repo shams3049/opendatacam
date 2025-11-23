@@ -34,6 +34,19 @@ OpenDataCam comes [feature packed](https://opendata.cam/features), the highlight
 
 The quickest way to get started with OpenDataCam is to use the existing Docker Images.
 
+### Choose Your Detection Engine
+
+OpenDataCam now supports two detection engines:
+
+1. **NVIDIA DeepStream SDK** (Recommended for production) - Modern, high-performance inference engine
+   - See [DeepStream Setup Guide](DEEPSTREAM.md)
+   - Supports x86, Jetson devices, and cloud deployment
+   - Better performance and easier to scale
+
+2. **Darknet/YOLO** (Legacy) - Original detection engine
+   - See setup instructions below
+   - Suitable for existing installations
+
 ### Pre-Requesits
 
 - You will need Docker and Docker-Compose installed. 
