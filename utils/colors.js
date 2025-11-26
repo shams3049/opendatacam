@@ -6,7 +6,9 @@ export function evaluateCSSVariable(color) {
 export function getCounterColor(colorLabel) {
   let color = null;
 
-  color = window.CONFIG.COUNTER_COLORS[colorLabel];
+  const config = window.CONFIG || {};
+  const counterColors = config.COUNTER_COLORS || {};
+  color = counterColors[colorLabel];
 
   if (color) {
     return color;
@@ -17,17 +19,26 @@ export function getCounterColor(colorLabel) {
 }
 
 export function getAvailableCounterColors() {
-  return Object.keys(window.CONFIG.COUNTER_COLORS);
+  const config = window.CONFIG || {};
+  const counterColors = config.COUNTER_COLORS || {};
+  return Object.keys(counterColors);
 }
 
 export function getDefaultCounterColor() {
-  return Object.keys(window.CONFIG.COUNTER_COLORS[getAvailableCounterColors()[0]]);
+  const config = window.CONFIG || {};
+  const counterColors = config.COUNTER_COLORS || {};
+  const labels = Object.keys(counterColors);
+  // Return the first available label or a sensible default label
+  return labels.length > 0 ? labels[0] : 'default';
 }
 
 export function getPathfinderColors() {
-  return window.CONFIG.PATHFINDER_COLORS;
+  const config = window.CONFIG || {};
+  const pathfinderColors = config.PATHFINDER_COLORS;
+  return Array.isArray(pathfinderColors) ? pathfinderColors : [];
 }
 
 export function getDisplayClasses() {
-  return window.CONFIG.DISPLAY_CLASSES;
+  const config = window.CONFIG || {};
+  return config.DISPLAY_CLASSES || [];
 }

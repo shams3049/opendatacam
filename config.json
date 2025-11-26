@@ -118,9 +118,9 @@
     }
   },
   "PORTS": {
-    "app": 8080,
-    "darknet_json_stream": 9070,
-    "darknet_mjpeg_stream": 9090
+    "app": 8081,
+    "darknet_json_stream": 9071,
+    "darknet_mjpeg_stream": 9091
   },
   "GPS": {
     "enabled": false,
