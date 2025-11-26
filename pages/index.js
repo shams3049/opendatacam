@@ -16,6 +16,8 @@ class Index extends React.Component {
       await store.dispatch(setURLData(req));
       await store.dispatch(loadConfig(req));
     }
+    // Must return an object per Next.js requirements
+    return {};
   }
 
   render() {
