@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  opendatacam:
+    restart: always
+    image: opendatacam/opendatacam:v3.0.2-deepstream-jetson
+    privileged: true
+    environment:
+      - DETECTION_ENGINE=deepstream
+      - DEEPSTREAM_HOST=deepstream
+    volumes:
+      - './config.json:/var/local/opendatacam/config.json'
+    ports:
+      - "8080:8080"
+      - "8070:8070"
+      - "8090:8090"
+    depends_on:
+      - mongo
+    networks:
+      - opendatacam-network
+  
+  # Optional: Separate DeepStream compute container for Jetson
+  # This runs DeepStream SDK for actual inference
+  # Comment out if running DeepStream externally
+  deepstream:
+    image: nvcr.io/nvidia/deepstream-l4t:7.0-samples-multiarch
+    privileged: true
+    volumes:
+      - deepstream_data:/opt/nvidia/deepstream/deepstream/data
+    ports:
+      - "8081:8080"
+    networks:
+      - opendatacam-network
+    command: tail -f /dev/null  # Keep container running
+  
+  mongo:
+    image: mongo:4.4.8
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - opendatacam-network
+
+volumes:
+  mongodb_data_container:
+  deepstream_data:
+
+networks:
+  opendatacam-network:
+    driver: bridge

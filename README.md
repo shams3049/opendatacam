@@ -30,11 +30,64 @@ OpenDataCam comes [feature packed](https://opendata.cam/features), the highlight
 - You own the data
 - Easy to use [API](https://opendata.cam/docs/api/)
 
+### ✨ What's New in v3.1.0
+
+**NVIDIA DeepStream SDK Integration**
+- 🚀 Modern inference engine with better performance
+- 🎯 Support for x86, Jetson, and cloud platforms
+- 🔌 Flexible architecture - run compute separately
+- 📊 Multiple pre-trained models (YOLOv4, YOLOv5, ResNet, PeopleNet, TrafficCamNet)
+- 🔄 Easy migration from Darknet (see [Migration Guide](MIGRATION.md))
+
+**Frontend Improvements**
+- ⚛️ Updated to React 18 and Next.js 13
+- 🎨 Improved UI responsiveness
+- 📡 Real-time DeepStream connection status
+- 🔒 Security updates to dependencies
+
+**Enhanced Flexibility**
+- 🏗️ Dual detection engine support (DeepStream + Darknet)
+- 🌐 Remote compute instance support
+- 📋 New API endpoints for DeepStream management
+- 📖 Comprehensive documentation and guides
+
 ## 🎬 Get Started, quick setup
 
 The quickest way to get started with OpenDataCam is to use the existing Docker Images.
 
-### Pre-Requesits
+### Choose Your Detection Engine
+
+OpenDataCam now supports two detection engines:
+
+1. **NVIDIA DeepStream SDK** (Recommended) - Modern, high-performance inference engine
+   - 📖 See [DeepStream Setup Guide](DEEPSTREAM.md)
+   - 🚀 Better performance and easier to scale
+   - 🎯 Supports x86, Jetson devices, and cloud deployment
+   - 🔄 Easy migration from Darknet - See [Migration Guide](MIGRATION.md)
+
+2. **Darknet/YOLO** (Legacy) - Original detection engine
+   - See setup instructions below
+   - Suitable for existing installations and custom models
+
+### Quick Start with DeepStream
+
+```bash
+# Download install script
+wget -N https://raw.githubusercontent.com/opendatacam/opendatacam/v3.1.0/docker/install-opendatacam.sh
+
+# Make it executable
+chmod +x install-opendatacam.sh
+
+# Install for x86/Server
+./install-opendatacam.sh --platform deepstream-x86
+
+# Or for Jetson devices
+./install-opendatacam.sh --platform deepstream-jetson
+```
+
+Access the UI at `http://localhost:8080` after installation completes.
+
+### Pre-Requesits for Legacy Darknet Setup
 
 - You will need Docker and Docker-Compose installed. 
 - If you want to run OpenDataCam on a NVIDIA GPU you will additonally need

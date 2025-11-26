@@ -4,6 +4,7 @@ import SVG from 'react-inlinesvg';
 import { hideMenu, setUiSetting } from '../../statemanagement/app/AppStateManagement';
 import { setUserSetting } from '../../statemanagement/app/UserSettingsStateManagement';
 import Toggle from '../shared/Toggle';
+import DeepStreamStatus from '../shared/DeepStreamStatus';
 
 class Menu extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class Menu extends Component {
           </button>
           <div className="p-5 w-full overflow-y-scroll">
             <h3 className="mb-4 text-2xl font-bold"><a className="mt-2" href="https://github.com/opendatacam/opendatacam" target="_blank">OpenDataCam</a></h3>
+            <DeepStreamStatus />
             <Toggle
               label="Counter"
               description="Count objects on active areas"

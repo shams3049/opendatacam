@@ -27,6 +27,7 @@ const configHelper = require('./server/utils/configHelper');
 const GpsTracker = require('./server/tracker/GpsTracker');
 const packageJson = require('./package.json');
 const { YoloDarknet } = require('./server/processes/YoloDarknet');
+const { DeepStreamAdapter } = require('./server/processes/DeepStreamAdapter');
 const { MongoDbManager } = require('./server/db/MongoDbManager');
 
 if (packageJson.version !== config.OPENDATACAM_VERSION) {
@@ -50,28 +51,59 @@ console.log(JSON.stringify(config, null, 2));
 console.log('-----------------------------------');
 Opendatacam.setConfig(config);
 
-// Initial YOLO config
-const yoloConfig = {
-  yoloParams: config.NEURAL_NETWORK_PARAMS[config.NEURAL_NETWORK],
-  videoType: config.VIDEO_INPUT,
-  videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
-  jsonStreamPort: configHelper.getJsonStreamPort(),
-  mjpegStreamPort: configHelper.getMjpegStreamPort(),
-  darknetPath: config.PATH_TO_YOLO_DARKNET,
-  darknetCmd: config.CMD_TO_YOLO_DARKNET,
-};
-if (config.VIDEO_INPUT === 'simulation') {
-  yoloConfig.darknetPath = '.';
-  yoloConfig.darknetCmd = 'node scripts/YoloSimulation.js';
-  if (yoloConfig.yoloParams === undefined) {
-    yoloConfig.yoloParams = {
-      data: 'data',
-      cfg: 'cfg',
-      weights: 'weights',
-    };
+// Determine which detection engine to use
+const detectionEngine = config.DETECTION_ENGINE || 'darknet';
+console.log(`Detection engine: ${detectionEngine}`);
+
+// Initialize detection engine (YOLO/Darknet or DeepStream)
+let YOLO;
+
+if (detectionEngine === 'deepstream') {
+  // DeepStream configuration
+  const deepstreamConfig = {
+    mode: config.DEEPSTREAM_CONFIG.mode,
+    deepstreamHost: config.DEEPSTREAM_CONFIG.host,
+    deepstreamPort: config.DEEPSTREAM_CONFIG.port,
+    videoType: config.VIDEO_INPUT,
+    videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
+    jsonStreamPort: configHelper.getJsonStreamPort(),
+    mjpegStreamPort: configHelper.getMjpegStreamPort(),
+    modelConfig: config.DEEPSTREAM_MODELS[config.NEURAL_NETWORK],
+    connectionTimeout: config.DEEPSTREAM_CONFIG.connectionTimeout,
+    retryAttempts: config.DEEPSTREAM_CONFIG.retryAttempts,
+  };
+  
+  if (config.VIDEO_INPUT === 'simulation') {
+    deepstreamConfig.mode = 'simulation';
   }
+  
+  YOLO = new DeepStreamAdapter(deepstreamConfig);
+} else {
+  // Legacy YOLO/Darknet configuration
+  const yoloConfig = {
+    yoloParams: config.NEURAL_NETWORK_PARAMS[config.NEURAL_NETWORK],
+    videoType: config.VIDEO_INPUT,
+    videoParams: config.VIDEO_INPUTS_PARAMS[config.VIDEO_INPUT],
+    jsonStreamPort: configHelper.getJsonStreamPort(),
+    mjpegStreamPort: configHelper.getMjpegStreamPort(),
+    darknetPath: config.PATH_TO_YOLO_DARKNET,
+    darknetCmd: config.CMD_TO_YOLO_DARKNET,
+  };
+  
+  if (config.VIDEO_INPUT === 'simulation') {
+    yoloConfig.darknetPath = '.';
+    yoloConfig.darknetCmd = 'node scripts/YoloSimulation.js';
+    if (yoloConfig.yoloParams === undefined) {
+      yoloConfig.yoloParams = {
+        data: 'data',
+        cfg: 'cfg',
+        weights: 'weights',
+      };
+    }
+  }
+  
+  YOLO = new YoloDarknet(yoloConfig);
 }
-let YOLO = new YoloDarknet(yoloConfig);
 
 // Select tracker, based on GPS settings in config
 let tracker = Tracker;
@@ -1190,6 +1222,113 @@ app.prepare()
     express.get('/ui', (req, res) => {
       const uiSettings = Opendatacam.getUISettings();
       res.json(uiSettings);
+    });
+
+    /**
+     * @api {get} /deepstream/status Get DeepStream connection status
+     * @apiName Get DeepStream Status
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Get the current connection status of the DeepStream adapter
+     *
+     * @apiSuccessExample {json} Success Response:
+     *    {
+            isStarted: true,
+            connected: true,
+            mode: "remote"
+          }
+     */
+    express.get('/deepstream/status', (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        res.json(YOLO.getStatus());
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {get} /deepstream/models Get available models
+     * @apiName Get DeepStream Models
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Get list of available models from DeepStream instance
+     *
+     * @apiSuccessExample {json} Success Response:
+     *    {
+            models: ["yolov4", "yolov5", "resnet10", "peoplenet", "trafficcamnet"]
+          }
+     */
+    express.get('/deepstream/models', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          const models = await YOLO.getAvailableModels();
+          res.json({ models });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {post} /deepstream/model Set active model
+     * @apiName Set DeepStream Model
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Set the active model for inference
+     *
+     * @apiParam {String} model The name of the model to activate
+     *
+     * @apiParamExample {json} Request Example:
+     *    {
+            model: "yolov4"
+          }
+     *
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 200 OK
+     */
+    express.post('/deepstream/model', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          await YOLO.setActiveModel(req.body.model);
+          res.sendStatus(200);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
+    });
+
+    /**
+     * @api {post} /deepstream/source Configure video source
+     * @apiName Configure DeepStream Video Source
+     * @apiGroup DeepStream
+     *
+     * @apiDescription Configure the video source for DeepStream
+     *
+     * @apiParam {String} source The video source URI
+     *
+     * @apiParamExample {json} Request Example:
+     *    {
+            source: "file:///path/to/video.mp4"
+          }
+     *
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 200 OK
+     */
+    express.post('/deepstream/source', async (req, res) => {
+      if (detectionEngine === 'deepstream' && YOLO) {
+        try {
+          await YOLO.configureVideoSource(req.body.source);
+          res.sendStatus(200);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      } else {
+        res.status(404).json({ error: 'DeepStream not configured' });
+      }
     });
 
     express.use('/api/doc', serveStatic('.build/apidoc'));

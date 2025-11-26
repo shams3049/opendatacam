@@ -4,14 +4,14 @@
 set -e
 
 # Each OpenDataCam release should set the correct version here and tag appropriatly on github
-VERSION=v3.0.2
-# PLATFORM in ["nano","xavier","tx2","nvidiadocker"]
+VERSION=v3.1.0
+# PLATFORM in ["nano","xavier","desktop","deepstream-x86","deepstream-jetson"]
 PLATFORM=undefined
 VIDEO_INPUT=undefined
 
-PLATFORM_OPTIONS=("nano" "xavier" "desktop")
-DEFAUT_VIDEO_INPUT_OPTIONS=("file" "file" "file")
-DEFAUT_NEURAL_NETWORK_OPTIONS=("yolov4-tiny" "yolov4" "yolov4")
+PLATFORM_OPTIONS=("nano" "xavier" "desktop" "deepstream-x86" "deepstream-jetson")
+DEFAUT_VIDEO_INPUT_OPTIONS=("file" "file" "file" "file" "file")
+DEFAUT_NEURAL_NETWORK_OPTIONS=("yolov4-tiny" "yolov4" "yolov4" "yolov4" "resnet10")
 ORCHESTRATOR_OPTIONS=("docker-compose" "k8s")
 
 # PATH TO DARKNET in docker container
