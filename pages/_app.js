@@ -3,14 +3,14 @@ import { Provider } from 'react-redux';
 import { wrapper } from '../statemanagement/store';
 import '../styles/index.css';
 
-// Keep a minimal custom _app, rely on wrapper.withRedux for injecting store + isServer for pages.
-function MyApp({ Component, pageProps, store }) {
+// Use wrapper.useWrappedStore() for next-redux-wrapper v8 to properly get the store.
+function MyApp({ Component, ...rest }) {
+  const { store, props } = wrapper.useWrappedStore(rest);
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <Component {...props.pageProps} />
     </Provider>
   );
 }
 
-// Export wrapped version (v8 still supports withRedux for pages using getInitialProps).
-export default wrapper.withRedux(MyApp);
+export default MyApp;

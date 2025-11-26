@@ -30,4 +30,3 @@ export const hydrateImmutableState = (initialPlainState) => {
 };
 
 export const wrapper = createWrapper(makeStore, { debug: false });
-
