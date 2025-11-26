@@ -1,11 +1,11 @@
 {
   "OPENDATACAM_VERSION": "3.1.0",
-  "DETECTION_ENGINE": "TO_REPLACE_DETECTION_ENGINE",
-  "PATH_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET",
-  "CMD_TO_YOLO_DARKNET" : "TO_REPLACE_PATH_TO_DARKNET/darknet",
-  "VIDEO_UPLOAD_FOLDER": "TO_REPLACE_PATH_TO_DARKNET/opendatacam_videos_uploaded",
-  "VIDEO_INPUT": "TO_REPLACE_VIDEO_INPUT",
-  "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
+  "DETECTION_ENGINE": "darknet",
+  "PATH_TO_YOLO_DARKNET" : ".",
+  "CMD_TO_YOLO_DARKNET" : "node scripts/YoloSimulation.js",
+  "VIDEO_UPLOAD_FOLDER": "opendatacam_videos_uploaded",
+  "VIDEO_INPUT": "simulation",
+  "NEURAL_NETWORK": "yolov4",
   "DEEPSTREAM_CONFIG": {
     "mode": "remote",
     "host": "deepstream",
@@ -110,7 +110,7 @@
       "canvasResolutionFactor": 0.1
     }
   },
-  "DATABASE": "mongo",
+  "DATABASE": "none",
   "DATABASE_PARAMS": {
     "mongo": {
       "url": "mongodb://mongo:27017",
@@ -119,8 +119,8 @@
   },
   "PORTS": {
     "app": 8080,
-    "darknet_json_stream": 8070,
-    "darknet_mjpeg_stream": 8090
+    "darknet_json_stream": 9070,
+    "darknet_mjpeg_stream": 9090
   },
   "GPS": {
     "enabled": false,

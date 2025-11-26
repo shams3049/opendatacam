@@ -1,25 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import App from 'next/app';
-import withRedux from 'next-redux-wrapper';
-import { makeStore } from '../statemanagement/store';
+import { wrapper } from '../statemanagement/store';
 import '../styles/index.css';
 
-class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
-    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
-
-    return { pageProps };
-  }
-
-  render() {
-    const { Component, pageProps, store } = this.props;
-    return (
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    );
-  }
+// Keep a minimal custom _app, rely on wrapper.withRedux for injecting store + isServer for pages.
+function MyApp({ Component, pageProps, store }) {
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+  );
 }
 
-export default withRedux(makeStore)(MyApp);
+// Export wrapped version (v8 still supports withRedux for pages using getInitialProps).
+export default wrapper.withRedux(MyApp);
